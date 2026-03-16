@@ -1,10 +1,9 @@
-# leejin
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>스터디 뒷풀이 정산 페이지</title>
+  <title>Big Talkers 정산</title>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -143,7 +142,7 @@
     .danger { background: #fee2e2; color: var(--danger); }
     .success { background: #dcfce7; color: var(--success); }
 
-    .table-list, .member-list, .expense-list, .message-list {
+    .table-list, .member-list, .expense-list, .message-list, .receipt-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -213,52 +212,6 @@
       font-weight: 900;
     }
 
-    .chips {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    .chip {
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: #f3f4f6;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .mini-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    .pill-inputs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    .pill {
-      padding: 8px 10px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      font-size: 13px;
-      cursor: pointer;
-      user-select: none;
-      background: white;
-    }
-
-    .pill.active {
-      background: var(--accent-soft);
-      border-color: #93c5fd;
-      color: var(--accent);
-      font-weight: 800;
-    }
-
     .empty {
       padding: 18px;
       text-align: center;
@@ -266,6 +219,34 @@
       border-radius: 16px;
       color: var(--sub);
       background: #f8fafc;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .preview-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .preview-card img {
+      display: block;
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #f3f4f6;
+    }
+
+    .preview-card .meta {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--sub);
     }
 
     .footer-note {
@@ -281,7 +262,8 @@
       }
       .summary-grid,
       .input-grid,
-      .input-grid.three {
+      .input-grid.three,
+      .preview-grid {
         grid-template-columns: 1fr;
       }
       .wrap { padding: 16px; }
@@ -293,10 +275,10 @@
 <body>
   <div class="wrap">
     <section class="hero">
-      <h1>스터디 뒷풀이 정산 페이지</h1>
+      <h1>Big Talkers 정산</h1>
       <p>
-        참석자 확인 → 테이블 배정 → 총 결제 금액 입력 → 1인당 금액 자동 계산 → 테이블별 정산 메시지 생성까지
-        한 번에 처리할 수 있는 간단한 정산 도구입니다.
+        날짜 선택 → 참석자와 테이블 입력 → 총 결제 금액 입력 → 테이블별 정산 메시지 복사까지 한 번에 처리하는 간단한 정산 페이지입니다.
+        음료비는 영수증 사진을 첨부해두고 각자 따로 보내도록 정리할 수 있게 구성했습니다.
       </p>
     </section>
 
@@ -305,32 +287,20 @@
         <h2>정산 설정</h2>
 
         <div class="section">
-          <div class="input-grid three">
-            <div>
-              <label for="meetingName">모임 이름</label>
-              <input id="meetingName" placeholder="예: 3월 2주차 스터디 뒷풀이" />
-            </div>
+          <div class="input-grid">
             <div>
               <label for="meetingDate">날짜</label>
               <input id="meetingDate" type="date" />
-            </div>
-            <div>
-              <label for="payerName">결제자 이름</label>
-              <input id="payerName" placeholder="예: 김진경" />
             </div>
           </div>
         </div>
 
         <div class="section">
           <h3>참석자 추가</h3>
-          <div class="input-grid three">
+          <div class="input-grid">
             <div>
               <label for="memberName">이름</label>
               <input id="memberName" placeholder="예: 민수" />
-            </div>
-            <div>
-              <label for="memberContact">연락처</label>
-              <input id="memberContact" placeholder="예: 010-1234-5678" />
             </div>
             <div>
               <label for="memberTable">테이블</label>
@@ -345,27 +315,33 @@
         </div>
 
         <div class="section">
-          <h3>결제 내역</h3>
-          <div class="input-grid three">
-            <div>
-              <label for="expenseLabel">항목명</label>
-              <input id="expenseLabel" placeholder="예: 식사비" />
-            </div>
+          <h3>결제 금액</h3>
+          <div class="input-grid">
             <div>
               <label for="expenseAmount">금액</label>
               <input id="expenseAmount" type="number" min="0" placeholder="예: 148000" />
             </div>
-            <div>
-              <label for="expenseTable">적용 대상</label>
-              <select id="expenseTable">
-                <option value="ALL">전체 참석자</option>
-              </select>
-            </div>
           </div>
           <div class="row" style="margin-top: 12px;">
-            <button class="secondary" id="addExpenseBtn">결제 내역 추가</button>
+            <button class="secondary" id="addExpenseBtn">금액 추가</button>
           </div>
           <div class="expense-list" id="expenseList" style="margin-top: 14px;"></div>
+        </div>
+
+        <div class="section">
+          <h3>음료비용 영수증 첨부</h3>
+          <label for="receiptInput">영수증 사진 업로드</label>
+          <input id="receiptInput" type="file" accept="image/*" multiple />
+          <div class="muted" style="margin-top: 8px;">
+            음료는 각자 영수증 보고 따로 보내는 방식이면, 사진만 올려두고 카톡방에 같이 공유하면 가장 편합니다.
+          </div>
+          <div class="preview-grid" id="receiptPreview"></div>
+        </div>
+
+        <div class="section">
+          <h3>음료비 메모</h3>
+          <label for="drinkMemo">누가 어떤 음료를 마셨는지 간단 메모</label>
+          <textarea id="drinkMemo" placeholder="예: 민수 - 아이스 아메리카노 1잔 / 서연 - 레몬에이드 1잔"></textarea>
         </div>
 
         <div class="section">
@@ -398,53 +374,42 @@
         </div>
 
         <div class="section">
-          <h3>카톡 전송용 메시지</h3>
+          <h3>카톡 복사용 메시지</h3>
           <div class="message-list" id="messageList"></div>
         </div>
       </aside>
     </div>
 
     <p class="footer-note">
-      저장 기능 없이 브라우저에서 바로 작동하는 단일 HTML입니다. 추후 원하면 엑셀 내보내기, 송금 여부 체크, 카카오톡 복붙 최적화도 붙일 수 있습니다.
+      현재 버전은 브라우저에서 바로 쓰는 단일 HTML입니다. 다음 단계로는 저장 기능, 미입금 체크, 참석자 일괄 붙여넣기까지 확장할 수 있습니다.
     </p>
   </div>
 
   <script>
     const state = {
       members: [],
-      expenses: []
+      expenses: [],
+      receipts: []
     };
 
     const $ = (id) => document.getElementById(id);
     const money = (n) => `${Number(n || 0).toLocaleString('ko-KR')}원`;
-
-    function getTables() {
-      return [...new Set(state.members.map(m => m.table).filter(Boolean))];
-    }
-
-    function syncExpenseTableOptions() {
-      const select = $('expenseTable');
-      const current = select.value;
-      const tables = getTables();
-      select.innerHTML = '<option value="ALL">전체 참석자</option>' +
-        tables.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('');
-      if ([...select.options].some(opt => opt.value === current)) {
-        select.value = current;
-      }
-    }
 
     function escapeHtml(text) {
       return String(text)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
+        .replace(/\"/g, '&quot;')
         .replace(/'/g, '&#039;');
+    }
+
+    function getTables() {
+      return [...new Set(state.members.map(m => m.table).filter(Boolean))];
     }
 
     function addMember() {
       const name = $('memberName').value.trim();
-      const contact = $('memberContact').value.trim();
       const table = $('memberTable').value.trim();
 
       if (!name || !table) {
@@ -455,21 +420,16 @@
       state.members.push({
         id: crypto.randomUUID(),
         name,
-        contact,
         table
       });
 
       $('memberName').value = '';
-      $('memberContact').value = '';
       $('memberTable').value = '';
-      syncExpenseTableOptions();
       render();
     }
 
     function addExpense() {
-      const label = $('expenseLabel').value.trim() || '미분류 결제';
       const amount = Number($('expenseAmount').value);
-      const target = $('expenseTable').value;
 
       if (!amount || amount <= 0) {
         alert('금액을 올바르게 입력해주세요.');
@@ -478,22 +438,15 @@
 
       state.expenses.push({
         id: crypto.randomUUID(),
-        label,
-        amount,
-        target
+        amount
       });
 
-      $('expenseLabel').value = '';
       $('expenseAmount').value = '';
-      $('expenseTable').value = 'ALL';
       render();
     }
 
     function removeMember(id) {
       state.members = state.members.filter(m => m.id !== id);
-      const tables = getTables();
-      state.expenses = state.expenses.filter(e => e.target === 'ALL' || tables.includes(e.target));
-      syncExpenseTableOptions();
       render();
     }
 
@@ -506,43 +459,29 @@
       if (!confirm('참석자와 결제 내역을 전부 지울까요?')) return;
       state.members = [];
       state.expenses = [];
-      syncExpenseTableOptions();
+      state.receipts = [];
+      $('receiptInput').value = '';
+      $('drinkMemo').value = '';
       render();
     }
 
     function getSettlement() {
       const tables = getTables();
-      const result = tables.map(tableName => {
+      const totalExpense = state.expenses.reduce((sum, e) => sum + e.amount, 0);
+      const totalMembers = state.members.length;
+      const perPersonGlobal = totalMembers ? Math.round(totalExpense / totalMembers) : 0;
+
+      return tables.map(tableName => {
         const members = state.members.filter(m => m.table === tableName);
-        let total = 0;
-        const includedExpenses = [];
-
-        state.expenses.forEach(expense => {
-          if (expense.target === 'ALL') {
-            const totalMembers = state.members.length;
-            if (totalMembers > 0) {
-              const share = expense.amount / totalMembers * members.length;
-              total += share;
-              includedExpenses.push(`${expense.label} (전체 분할)`);
-            }
-          } else if (expense.target === tableName) {
-            total += expense.amount;
-            includedExpenses.push(`${expense.label} (${tableName})`);
-          }
-        });
-
-        const perPerson = members.length ? Math.round(total / members.length) : 0;
+        const total = perPersonGlobal * members.length;
 
         return {
           tableName,
           members,
-          total: Math.round(total),
-          perPerson,
-          includedExpenses
+          total,
+          perPerson: perPersonGlobal
         };
       });
-
-      return result;
     }
 
     function renderMembers() {
@@ -557,7 +496,6 @@
           <div class="item-top">
             <div>
               <div class="item-title">${escapeHtml(member.name)}</div>
-              <div class="muted">${escapeHtml(member.contact || '연락처 미입력')}</div>
             </div>
             <div class="row">
               <span class="badge">${escapeHtml(member.table)}</span>
@@ -571,16 +509,16 @@
     function renderExpenses() {
       const box = $('expenseList');
       if (!state.expenses.length) {
-        box.innerHTML = '<div class="empty">아직 결제 내역이 없습니다.</div>';
+        box.innerHTML = '<div class="empty">아직 입력된 금액이 없습니다.</div>';
         return;
       }
 
-      box.innerHTML = state.expenses.map(expense => `
+      box.innerHTML = state.expenses.map((expense, index) => `
         <div class="item">
           <div class="item-top">
             <div>
-              <div class="item-title">${escapeHtml(expense.label)}</div>
-              <div class="muted">적용 대상: ${expense.target === 'ALL' ? '전체 참석자' : escapeHtml(expense.target)}</div>
+              <div class="item-title">결제 ${index + 1}</div>
+              <div class="muted">합산 대상 금액</div>
             </div>
             <div class="row">
               <span class="badge">${money(expense.amount)}</span>
@@ -629,8 +567,8 @@
               <div class="value" style="font-size: 18px;">${money(item.perPerson)}</div>
             </div>
             <div class="summary-box">
-              <div class="label">포함 항목</div>
-              <div class="muted">${item.includedExpenses.length ? item.includedExpenses.map(escapeHtml).join(', ') : '없음'}</div>
+              <div class="label">비고</div>
+              <div class="muted">음료는 영수증 별도 확인</div>
             </div>
           </div>
         </div>
@@ -638,19 +576,18 @@
     }
 
     function buildMessage(item) {
-      const payerName = $('payerName').value.trim() || '결제자';
-      const meetingName = $('meetingName').value.trim() || '스터디 뒷풀이';
       const meetingDate = $('meetingDate').value;
       const formattedDate = meetingDate ? new Date(meetingDate).toLocaleDateString('ko-KR') : '날짜 미입력';
+      const drinkMemo = $('drinkMemo').value.trim();
 
-      return `[${meetingName} 정산 안내]\n` +
+      return `[Big Talkers 정산 안내]\n` +
         `일시: ${formattedDate}\n` +
         `테이블: ${item.tableName}\n` +
         `참석자: ${item.members.map(m => m.name).join(', ')}\n` +
-        `총액: ${money(item.total)}\n` +
-        `1인당 금액: ${money(item.perPerson)}\n` +
-        `결제자: ${payerName}\n\n` +
-        `확인 후 ${payerName}에게 송금 부탁드립니다. 감사합니다!`;
+        `테이블 총액: ${money(item.total)}\n` +
+        `1인당 금액: ${money(item.perPerson)}\n\n` +
+        `음료는 영수증 확인 후 각자 따로 보내주시면 됩니다.` +
+        (drinkMemo ? `\n음료 메모: ${drinkMemo}` : '');
     }
 
     function copyText(text) {
@@ -684,33 +621,56 @@
       window.__messages = settlements.map(item => buildMessage(item));
     }
 
+    function handleReceipts(event) {
+      const files = [...event.target.files];
+      state.receipts = files.map(file => ({
+        id: crypto.randomUUID(),
+        name: file.name,
+        url: URL.createObjectURL(file)
+      }));
+      renderReceipts();
+    }
+
+    function renderReceipts() {
+      const box = $('receiptPreview');
+      if (!state.receipts.length) {
+        box.innerHTML = '';
+        return;
+      }
+
+      box.innerHTML = state.receipts.map(receipt => `
+        <div class="preview-card">
+          <img src="${receipt.url}" alt="${escapeHtml(receipt.name)}" />
+          <div class="meta">${escapeHtml(receipt.name)}</div>
+        </div>
+      `).join('');
+    }
+
     function render() {
       renderMembers();
       renderExpenses();
       renderSummary();
       renderTables();
       renderMessages();
+      renderReceipts();
     }
 
     function loadSample() {
       state.members = [
-        { id: crypto.randomUUID(), name: '진경', contact: '010-1111-2222', table: 'A테이블' },
-        { id: crypto.randomUUID(), name: '민수', contact: '010-2222-3333', table: 'A테이블' },
-        { id: crypto.randomUUID(), name: '서연', contact: '010-3333-4444', table: 'B테이블' },
-        { id: crypto.randomUUID(), name: '현우', contact: '010-4444-5555', table: 'B테이블' },
-        { id: crypto.randomUUID(), name: '지민', contact: '010-5555-6666', table: 'B테이블' }
+        { id: crypto.randomUUID(), name: '진경', table: 'A테이블' },
+        { id: crypto.randomUUID(), name: '민수', table: 'A테이블' },
+        { id: crypto.randomUUID(), name: '서연', table: 'B테이블' },
+        { id: crypto.randomUUID(), name: '현우', table: 'B테이블' },
+        { id: crypto.randomUUID(), name: '지민', table: 'B테이블' }
       ];
 
       state.expenses = [
-        { id: crypto.randomUUID(), label: '기본 식사비', amount: 120000, target: 'ALL' },
-        { id: crypto.randomUUID(), label: 'A테이블 추가 주문', amount: 18000, target: 'A테이블' },
-        { id: crypto.randomUUID(), label: 'B테이블 음료', amount: 15000, target: 'B테이블' }
+        { id: crypto.randomUUID(), amount: 120000 },
+        { id: crypto.randomUUID(), amount: 18000 }
       ];
 
-      $('meetingName').value = '스터디 뒷풀이';
-      $('payerName').value = '진경';
       $('meetingDate').value = new Date().toISOString().slice(0, 10);
-      syncExpenseTableOptions();
+      $('drinkMemo').value = '민수 - 아메리카노 / 서연 - 레몬에이드';
       render();
     }
 
@@ -718,9 +678,10 @@
     $('addExpenseBtn').addEventListener('click', addExpense);
     $('sampleBtn').addEventListener('click', loadSample);
     $('resetBtn').addEventListener('click', resetAll);
+    $('receiptInput').addEventListener('change', handleReceipts);
+    $('drinkMemo').addEventListener('input', renderMessages);
 
     render();
-    syncExpenseTableOptions();
 
     window.removeMember = removeMember;
     window.removeExpense = removeExpense;
