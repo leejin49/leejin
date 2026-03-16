@@ -7,317 +7,40 @@
   <style>
     body {
       margin: 0;
+      padding: 40px 20px;
       font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
       background: #f5f7fb;
       color: #111827;
-    }
-
-    .wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .hero {
-      background: #2563eb;
-      color: white;
-      padding: 24px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-    }
-
-    .card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    h1, h2, h3 {
-      margin-top: 0;
-    }
-
-    label {
-      display: block;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: #374151;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      font-size: 14px;
-      margin-bottom: 12px;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
-
-    button {
-      border: 0;
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
-
-    .primary { background: #2563eb; color: white; }
-    .gray { background: #e5e7eb; color: #111827; }
-    .red { background: #fee2e2; color: #b91c1c; }
-
-    .summary {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      text-align: center;
     }
 
     .box {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      padding: 16px;
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
 
-    .box-title {
-      font-size: 12px;
-      color: #6b7280;
-      margin-bottom: 6px;
-      font-weight: 700;
+    h1 {
+      margin: 0 0 12px;
+      font-size: 32px;
+      color: #2563eb;
     }
 
-    .box-value {
-      font-size: 22px;
-      font-weight: 900;
-    }
-
-    .member {
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 12px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .muted {
-      color: #6b7280;
-      font-size: 13px;
-    }
-
-    .empty {
-      padding: 16px;
-      border: 1px dashed #cbd5e1;
-      border-radius: 14px;
-      text-align: center;
-      color: #6b7280;
-      background: #f9fafb;
-    }
-
-    @media (max-width: 700px) {
-      .summary {
-        grid-template-columns: 1fr;
-      }
+    p {
+      margin: 0;
+      font-size: 18px;
+      color: #374151;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="hero">
-      <h1>Big Talkers 정산</h1>
-      <p>안주 총액만 나누는 간단 정산 페이지</p>
-    </div>
-
-    <div class="card">
-      <h2>입력</h2>
-
-      <label for="meetingDate">날짜</label>
-      <input id="meetingDate" type="date" />
-
-      <label for="memberName">참여자 이름</label>
-      <input id="memberName" type="text" placeholder="예: 진경" />
-
-      <label for="memberTable">테이블</label>
-      <input id="memberTable" type="text" placeholder="예: A테이블" />
-
-      <button class="primary" id="addMemberBtn" type="button">참여자 추가</button>
-      <button class="gray" id="sampleBtn" type="button">샘플 넣기</button>
-      <button class="red" id="resetBtn" type="button">초기화</button>
-
-      <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
-
-      <label for="expenseAmount">안주 총액</label>
-      <input id="expenseAmount" type="number" min="0" placeholder="예: 120000" />
-
-      <label for="drinkMemo">음료 메모</label>
-      <textarea id="drinkMemo" placeholder="예: 음료는 각자 확인 후 따로 입금"></textarea>
-    </div>
-
-    <div class="card">
-      <h2>정산 결과</h2>
-
-      <div class="summary">
-        <div class="box">
-          <div class="box-title">총 참여자</div>
-          <div class="box-value" id="totalMembers">0명</div>
-        </div>
-        <div class="box">
-          <div class="box-title">안주 총액</div>
-          <div class="box-value" id="totalExpense">0원</div>
-        </div>
-        <div class="box">
-          <div class="box-title">1인당 금액</div>
-          <div class="box-value" id="perPerson">0원</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>참여자 목록</h2>
-      <div id="memberList"></div>
-    </div>
-
-    <div class="card">
-      <h2>카톡 복사용 메시지</h2>
-      <textarea id="messageBox" readonly></textarea>
-      <button class="primary" id="copyBtn" type="button">메시지 복사</button>
-    </div>
+  <div class="box">
+    <h1>Big Talkers 정산</h1>
+    <p>페이지 연결 확인용입니다.</p>
   </div>
-
-  <script>
-    const members = [];
-
-    const meetingDate = document.getElementById('meetingDate');
-    const memberName = document.getElementById('memberName');
-    const memberTable = document.getElementById('memberTable');
-    const expenseAmount = document.getElementById('expenseAmount');
-    const drinkMemo = document.getElementById('drinkMemo');
-    const memberList = document.getElementById('memberList');
-    const totalMembers = document.getElementById('totalMembers');
-    const totalExpense = document.getElementById('totalExpense');
-    const perPerson = document.getElementById('perPerson');
-    const messageBox = document.getElementById('messageBox');
-
-    function formatMoney(value) {
-      return Number(value || 0).toLocaleString('ko-KR') + '원';
-    }
-
-    function render() {
-      const total = Number(expenseAmount.value || 0);
-      const count = members.length;
-      const each = count > 0 ? Math.round(total / count) : 0;
-
-      totalMembers.textContent = count + '명';
-      totalExpense.textContent = formatMoney(total);
-      perPerson.textContent = formatMoney(each);
-
-      if (members.length === 0) {
-        memberList.innerHTML = '<div class=\"empty\">아직 참여자가 없습니다.</div>';
-      } else {
-        memberList.innerHTML = members.map((member, index) => {
-          return `
-            <div class="member">
-              <div>
-                <div><strong>${member.name}</strong></div>
-                <div class="muted">${member.table}</div>
-              </div>
-              <button class="red" type="button" onclick="removeMember(${index})">삭제</button>
-            </div>
-          `;
-        }).join('');
-      }
-
-      const dateText = meetingDate.value ? new Date(meetingDate.value).toLocaleDateString('ko-KR') : '날짜 미입력';
-      const namesText = members.length > 0 ? members.map(m => m.name).join(', ') : '없음';
-      const memoText = drinkMemo.value.trim();
-
-      let message = '[Big Talkers 정산 안내]\\n';
-      message += '날짜: ' + dateText + '\\n';
-      message += '참여자: ' + namesText + '\\n';
-      message += '안주 총액: ' + formatMoney(total) + '\\n';
-      message += '1인당 금액: ' + formatMoney(each) + '\\n';
-      message += '\\n음료는 각자 확인 후 따로 입금해주세요.';
-      if (memoText) {
-        message += '\\n메모: ' + memoText;
-      }
-
-      messageBox.value = message;
-    }
-
-    function removeMember(index) {
-      members.splice(index, 1);
-      render();
-    }
-
-    function addMember() {
-      const name = memberName.value.trim();
-      const table = memberTable.value.trim();
-
-      if (!name || !table) {
-        alert('이름과 테이블을 입력해주세요.');
-        return;
-      }
-
-      members.push({ name, table });
-      memberName.value = '';
-      memberTable.value = '';
-      render();
-    }
-
-    function loadSample() {
-      members.length = 0;
-      members.push(
-        { name: '진경', table: 'A테이블' },
-        { name: '민수', table: 'A테이블' },
-        { name: '서연', table: 'B테이블' },
-        { name: '현우', table: 'B테이블' }
-      );
-      expenseAmount.value = '120000';
-      drinkMemo.value = '음료는 각자 영수증 확인 후 따로 입금';
-      meetingDate.value = new Date().toLocaleDateString('en-CA');
-      render();
-    }
-
-    function resetAll() {
-      members.length = 0;
-      memberName.value = '';
-      memberTable.value = '';
-      expenseAmount.value = '';
-      drinkMemo.value = '';
-      meetingDate.value = new Date().toLocaleDateString('en-CA');
-      render();
-    }
-
-    function copyMessage() {
-      navigator.clipboard.writeText(messageBox.value)
-        .then(() => alert('복사했습니다.'))
-        .catch(() => alert('복사 실패. 직접 복사해주세요.'));
-    }
-
-    document.getElementById('addMemberBtn').addEventListener('click', addMember);
-    document.getElementById('sampleBtn').addEventListener('click', loadSample);
-    document.getElementById('resetBtn').addEventListener('click', resetAll);
-    document.getElementById('copyBtn').addEventListener('click', copyMessage);
-    expenseAmount.addEventListener('input', render);
-    drinkMemo.addEventListener('input', render);
-    meetingDate.addEventListener('input', render);
-
-    meetingDate.value = new Date().toLocaleDateString('en-CA');
-    window.removeMember = removeMember;
-
-    render();
-  </script>
 </body>
 </html>
